@@ -13,8 +13,4 @@ public class MultipartBody {
     @FormParam("file")
     @PartType(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream file;
-
-    @FormParam("type")
-    @PartType(MediaType.TEXT_PLAIN)
-    public String type;
 }
