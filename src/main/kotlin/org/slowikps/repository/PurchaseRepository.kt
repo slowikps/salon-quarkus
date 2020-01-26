@@ -7,10 +7,10 @@ import javax.persistence.EntityManager
 import javax.transaction.Transactional
 
 @ApplicationScoped
-class PurchaseRepository(
+class PurchaseRepository {
+
     @Inject
-    private val em: EntityManager
-) {
+    private lateinit var em: EntityManager
 
     @Transactional
     fun persist(purchase: Purchase) {

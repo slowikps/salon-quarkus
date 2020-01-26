@@ -8,13 +8,13 @@ import javax.persistence.Id
 @Entity
 class Service( //TODO name is not great
     @Id
-    val id: UUID,
+    var id: UUID,
     @Column(name = "appointment_id")
-    val appointmentId: UUID,
-    val name: String,
-    val price: BigDecimal,
+    var appointmentId: UUID,
+    var name: String,
+    var price: BigDecimal,
     @Column(name = "loyalty_points")
-    val loyaltyPoints: Int
+    var loyaltyPoints: Int
 ) {
 
     companion object Factory {

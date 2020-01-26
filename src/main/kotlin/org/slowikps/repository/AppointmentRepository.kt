@@ -7,10 +7,10 @@ import javax.persistence.EntityManager
 import javax.transaction.Transactional
 
 @ApplicationScoped
-class AppointmentRepository(
+class AppointmentRepository {
+
     @Inject
-    private val em: EntityManager
-) {
+    private lateinit var em: EntityManager
 
     @Transactional
     fun persist(appointment: Appointment) {

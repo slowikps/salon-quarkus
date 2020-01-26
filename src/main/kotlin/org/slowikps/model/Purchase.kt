@@ -5,16 +5,17 @@ import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
+
 @Entity
 class Purchase(
     @Id
-    val id: UUID,
+    var id: UUID? = null,
     @Column(name = "appointment_id")
-    val appointmentId: UUID,
-    val name: String,
-    val price: BigDecimal,
+    var appointmentId: UUID? = null,
+    var name: String? = null,
+    var price: BigDecimal? = null,
     @Column(name = "loyalty_points")
-    val loyaltyPoints: Int
+    var loyaltyPoints: Int? = null
 ) {
 
     companion object Factory {
