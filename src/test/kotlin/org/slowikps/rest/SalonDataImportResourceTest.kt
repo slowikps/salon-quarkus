@@ -9,22 +9,24 @@ import org.slowikps.config.DatabaseResource
 
 @QuarkusTest
 @QuarkusTestResource(DatabaseResource::class)
-open class SalonDataImportResourceTest {
+class SalonDataImportResourceTest {
 
     @Test
-    fun testClientsImport() {
-        // Given
-        // Given
-        val bytes: ByteArray = IOUtils.toByteArray({}.javaClass.getResourceAsStream("/clients.csv"))
+    fun testAllImports() {
+        sendFileToImportEndpoint("client")
+        sendFileToImportEndpoint("appointment")
+        sendFileToImportEndpoint("purchase")
+        sendFileToImportEndpoint("service")
+    }
+
+    private fun sendFileToImportEndpoint(name: String) {
+        val bytes: ByteArray = IOUtils.toByteArray({}.javaClass.getResourceAsStream("/${name}s.csv"))
 
         given()
             .multiPart("file", "file", bytes)
-            .formParam("type", "client")
-          .`when`()
-            .post("/admin/import/client")
-          .then()
-             .statusCode(204)
-        // .body(`is`("hello"))
+            .`when`()
+            .post("/admin/import/$name")
+            .then()
+            .statusCode(204)
     }
-
 }

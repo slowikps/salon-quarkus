@@ -16,7 +16,7 @@ import javax.ws.rs.Produces
 import javax.ws.rs.core.MediaType
 
 @Path("/admin/import")
-class SalonDataImportResource{
+class SalonDataImportResource {
 
     @Inject
     private lateinit var dataImportService: DataImportService
@@ -58,6 +58,12 @@ class SalonDataImportResource{
             .lines()
             .drop(1)
             .filter { it.isNotBlank() }
-            .map(transformer)
+            .map {
+                try {
+                    transformer(it)
+                } catch (ill: IllegalArgumentException) {
+                    throw IllegalArgumentException("Malformed data [row = $it, message: ${ill.message}]", ill)
+                }
+            }
     }
 }

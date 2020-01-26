@@ -3,6 +3,7 @@ package org.slowikps.repository
 import org.slowikps.model.Client
 import org.slowikps.model.ClientView
 import java.time.OffsetDateTime
+import java.util.UUID
 import javax.enterprise.context.ApplicationScoped
 import javax.inject.Inject
 import javax.persistence.EntityManager
@@ -22,6 +23,10 @@ class ClientRepository {
     @Transactional
     fun persistAll(clients: List<Client>) {
         clients.forEach { persist(it) }
+    }
+
+    fun findById(id: UUID): Client? {
+        return em.find(Client::class.java, id)
     }
 
     fun getActiveClientsWithMostPoints(limit: Int, from: OffsetDateTime): List<ClientView> {
