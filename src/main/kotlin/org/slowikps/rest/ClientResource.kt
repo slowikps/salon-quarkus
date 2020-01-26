@@ -2,7 +2,8 @@ package org.slowikps.rest
 
 import org.slowikps.model.ClientView
 import org.slowikps.service.ClientService
-import java.time.OffsetDateTime
+import java.text.SimpleDateFormat
+import java.time.ZoneOffset
 import javax.inject.Inject
 import javax.ws.rs.GET
 import javax.ws.rs.Path
@@ -16,13 +17,17 @@ class ClientResource {
     @Inject
     private lateinit var clientService: ClientService
 
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+
     @Path("findMostLoyal")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     fun getMostLoyalClient(
-        @QueryParam("limit") limit: Int = 50,
-        @QueryParam("from") from: OffsetDateTime
+        @QueryParam("limit") limit: Int,
+        @QueryParam("from") from: String
     ): List<ClientView> {
-        return clientService.getActiveClientsWithMostPoints(limit, from)
+        return clientService.getActiveClientsWithMostPoints(
+            limit, dateFormat.parse(from).toInstant().atOffset(ZoneOffset.UTC)
+        )
     }
 }
