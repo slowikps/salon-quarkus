@@ -7,7 +7,7 @@ TODO:
 1. I chose to be strict with data import -> if there is a single malformed row in the csv the whole file is rejected
 1. ORM improvement - Panache looks interesting at the first glance. Does it work well with Kotlin?
 1. Move to Java 12
-1. Data validation - only very basic is implemented
+1. Data validation - only very basic is implemented. Problem is not properly populated on native!
 1. OpenAPI 
 1. Proper Price handling
 1. Service == Service
@@ -52,7 +52,9 @@ If you want to learn more about building native executables, please consult http
 
 # Quick comparision JVM vs Native: 
 Startup time: 
-- JVM ~ 2.7 s 
+- JVM       ~ 2.7 s 
+- Native    ~ 0.069 s
 
 Memory footprint: 
 - JVM ~ 270 MB
+- Native ~ 30.2 MB
