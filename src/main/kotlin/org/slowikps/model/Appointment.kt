@@ -10,27 +10,30 @@ import javax.persistence.Id
 @Entity
 class Appointment(
     @Id
-    val id: UUID,
+    var id: UUID? = null,
     @Column(name = "client_id")
-    val clientId: UUID,
+    var clientId: UUID? = null,
     @Column(name = "start_time")
-    val startTime: OffsetDateTime,
+    var startTime: OffsetDateTime? = null,
     @Column(name = "end_time")
-    val endTime: OffsetDateTime
+    var endTime: OffsetDateTime? = null
 ) {
 
     companion object Factory {
-        val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z")
+        private val dateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z")
         fun fromString(line: String): Appointment {
             val split: List<String> = line.split(",")
 
             if (split.size != 4) throw IllegalArgumentException("Malformed line: $line")
 
+            val startTime = OffsetDateTime.parse(split[2], dateFormat)
+            val endTime = OffsetDateTime.parse(split[3], dateFormat)
+            if (endTime.isBefore(startTime)) throw IllegalArgumentException("Appointment start time [$startTime] is after end time [$endTime]")
             return Appointment(
                 UUID.fromString(split[0]),
                 UUID.fromString(split[1]),
-                OffsetDateTime.parse(split[2], dateFormat),
-                OffsetDateTime.parse(split[3], dateFormat)
+                startTime,
+                endTime
             )
         }
     }

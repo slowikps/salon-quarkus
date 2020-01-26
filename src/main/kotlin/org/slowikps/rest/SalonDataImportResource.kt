@@ -16,10 +16,10 @@ import javax.ws.rs.Produces
 import javax.ws.rs.core.MediaType
 
 @Path("/admin/import")
-class SalonDataImport(
+class SalonDataImportResource{
+
     @Inject
-    private val dataImportService: DataImportService
-) {
+    private lateinit var dataImportService: DataImportService
 
     @Path("client")
     @POST

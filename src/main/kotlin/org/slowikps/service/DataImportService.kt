@@ -12,16 +12,16 @@ import javax.enterprise.context.ApplicationScoped
 import javax.inject.Inject
 
 @ApplicationScoped
-class DataImportService(
+class DataImportService {
+
     @Inject
-    val clientRepository: ClientRepository,
+    private lateinit var clientRepository: ClientRepository
     @Inject
-    val appointmentRepository: AppointmentRepository,
+    private lateinit var appointmentRepository: AppointmentRepository
     @Inject
-    val purchaseRepository: PurchaseRepository,
+    private lateinit var purchaseRepository: PurchaseRepository
     @Inject
-    val serviceRepository: ServiceRepository
-) {
+    private lateinit var serviceRepository: ServiceRepository
 
     fun persistClients(clients: List<Client>) {
         clientRepository.persistAll(clients)

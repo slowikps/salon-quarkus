@@ -3,28 +3,41 @@ package org.slowikps.model
 import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.EnumType
+import javax.persistence.Enumerated
 import javax.persistence.Id
+import javax.persistence.NamedQuery
 
 //id,first_name,last_name,email,phone,gender,banned
 enum class Status {
     ACTIVE, BLOCKED
 }
 
-// @NamedQuery(name = "Fruits.findAll",
-//     query = "SELECT f FROM Fruit f ORDER BY f.name",
-//     hints = @QueryHint(name = "org.hibernate.cacheable", value = "true") )
+@NamedQuery(
+    name = "Client.getMostLoyal",
+    query = """
+        SELECT NEW org.slowikps.model.ClientView(c.id, c.firstName, c.lastName, SUM(p.loyaltyPoints + s.loyaltyPoints))
+        FROM Client c JOIN Appointment a ON c.id = a.clientId
+            LEFT JOIN Purchase p ON a.id = p.appointmentId
+            LEFT JOIN Service s ON a.id = s.appointmentId
+        WHERE c.status = 'ACTIVE' AND a.startTime > :from
+        GROUP BY c 
+        ORDER BY SUM(p.loyaltyPoints + s.loyaltyPoints) DESC NULLS LAST
+    """
+)
 @Entity
 data class Client(
     @Id
-    val id: UUID,
+    var id: UUID? = null,
     @Column(name = "first_name")
-    val firstName: String,
+    var firstName: String? = null,
     @Column(name = "last_name")
-    val lastName: String,
-    val email: String, //TODO validation
-    val phone: String, //TODO validation
-    val gender: String,
-    val status: Status
+    var lastName: String? = null,
+    var email: String? = null, //TODO validation
+    var phone: String? = null, //TODO validation
+    var gender: String? = null,
+    @Enumerated(EnumType.STRING)
+    var status: Status? = null
 ) {
 
     companion object Factory {

@@ -9,7 +9,7 @@ import org.slowikps.config.DatabaseResource
 
 @QuarkusTest
 @QuarkusTestResource(DatabaseResource::class)
-open class SalonDataImportTest {
+open class SalonDataImportResourceTest {
 
     @Test
     fun testClientsImport() {
