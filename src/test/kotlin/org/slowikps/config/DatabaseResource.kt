@@ -1,6 +1,7 @@
 package org.slowikps.config
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager
+import org.junit.jupiter.api.BeforeEach
 import org.testcontainers.containers.PostgreSQLContainer
 
 //https://github.com/testcontainers/testcontainers-java/issues/318
