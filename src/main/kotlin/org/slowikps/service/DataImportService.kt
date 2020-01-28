@@ -2,12 +2,10 @@ package org.slowikps.service
 
 import org.slowikps.model.Appointment
 import org.slowikps.model.Client
-import org.slowikps.model.Purchase
-import org.slowikps.model.Service
+import org.slowikps.model.Item
 import org.slowikps.repository.AppointmentRepository
 import org.slowikps.repository.ClientRepository
-import org.slowikps.repository.PurchaseRepository
-import org.slowikps.repository.ServiceRepository
+import org.slowikps.repository.ItemRepository
 import javax.enterprise.context.ApplicationScoped
 import javax.inject.Inject
 
@@ -19,9 +17,7 @@ class DataImportService {
     @Inject
     private lateinit var appointmentRepository: AppointmentRepository
     @Inject
-    private lateinit var purchaseRepository: PurchaseRepository
-    @Inject
-    private lateinit var serviceRepository: ServiceRepository
+    private lateinit var itemRepository: ItemRepository
 
     fun persistClients(clients: List<Client>) {
         clientRepository.persistAll(clients)
@@ -31,11 +27,7 @@ class DataImportService {
         appointmentRepository.persistAll(appointments)
     }
 
-    fun persistPurchases(purchases: List<Purchase>) {
-        purchaseRepository.persistAll(purchases)
-    }
-
-    fun persistService(services: List<Service>) {
-        serviceRepository.persistAll(services)
+    fun persistService(items: List<Item>) {
+        itemRepository.persistAll(items)
     }
 }

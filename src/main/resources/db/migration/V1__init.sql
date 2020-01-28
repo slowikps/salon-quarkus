@@ -15,18 +15,11 @@ CREATE TABLE appointment (
   end_time    TIMESTAMP NOT NULL
 );
 
-CREATE TABLE purchase (
+CREATE TABLE item (
   id                UUID NOT NULL PRIMARY KEY,
   appointment_id    UUID NOT NULL REFERENCES appointment(id),
   name              TEXT NOT NULL,
   price             MONEY NOT NULL,
-  loyalty_points    INT NOT NULL
-);
-
-CREATE TABLE service (
-  id                UUID NOT NULL PRIMARY KEY,
-  appointment_id    UUID NOT NULL REFERENCES appointment(id),
-  name              TEXT NOT NULL,
-  price             MONEY NOT NULL,
+  type              TEXT NOT NULL,
   loyalty_points    INT NOT NULL
 );

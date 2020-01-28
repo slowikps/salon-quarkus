@@ -6,5 +6,5 @@ data class ClientView(
     var id: UUID? = null,
     var firstName: String? = null,
     var lastName: String? = null,
-    var loyaltyPoints: Long? = 0
+    var loyaltyPoints: Long = 0
 )

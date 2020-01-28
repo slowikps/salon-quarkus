@@ -4,8 +4,9 @@ import org.apache.commons.io.IOUtils
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm
 import org.slowikps.model.Appointment
 import org.slowikps.model.Client
-import org.slowikps.model.Purchase
-import org.slowikps.model.Service
+import org.slowikps.model.Item
+import org.slowikps.model.Type
+import org.slowikps.rest.util.MultipartBody
 import org.slowikps.service.DataImportService
 import java.nio.charset.StandardCharsets
 import javax.inject.Inject
@@ -42,7 +43,7 @@ class SalonDataImportResource {
     @Produces(MediaType.APPLICATION_JSON) //TODO: is this correct output?
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     fun importPurchases(@MultipartForm body: MultipartBody) {
-        dataImportService.persistPurchases(fileAsListOf(body, Purchase.Factory::fromString))
+        dataImportService.persistService(fileAsListOf(body) { Item.Factory.fromString(it, Type.PURCHASE) })
     }
 
     @Path("service")
@@ -50,7 +51,7 @@ class SalonDataImportResource {
     @Produces(MediaType.APPLICATION_JSON) //TODO: is this correct output?
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     fun importServices(@MultipartForm body: MultipartBody) {
-        dataImportService.persistService(fileAsListOf(body, Service.Factory::fromString))
+        dataImportService.persistService(fileAsListOf(body) { Item.Factory.fromString(it, Type.SERVICE) })
     }
 
     private fun <T> fileAsListOf(body: MultipartBody, transformer: (String) -> T): List<T> {

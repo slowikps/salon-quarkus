@@ -1,4 +1,4 @@
-package org.slowikps.rest;
+package org.slowikps.rest.util;
 
 
 import java.io.InputStream;

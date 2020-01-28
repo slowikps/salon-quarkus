@@ -10,9 +10,9 @@ import org.slowikps.config.DatabaseResource
 import org.slowikps.model.Client
 import org.slowikps.model.Status
 import org.slowikps.util.CleanDBeforeEach
+import java.time.OffsetDateTime
 import java.util.UUID
 import javax.inject.Inject
-import javax.validation.ConstraintViolationException
 
 @QuarkusTest
 @QuarkusTestResource(DatabaseResource::class)
@@ -21,7 +21,7 @@ class ClientRepositoryTest : CleanDBeforeEach() {
     @Inject
     private lateinit var clientRepository: ClientRepository
 
-    val testClient = Client(
+    private val activeClient1 = Client(
         UUID.randomUUID(),
         "Pawel",
         "Slowinski",
@@ -31,6 +31,16 @@ class ClientRepositoryTest : CleanDBeforeEach() {
         Status.ACTIVE
     )
 
+    private val blockedClient = Client(
+        UUID.randomUUID(),
+        "bcName",
+        "bcLastName",
+        "bc-email@gmail.com",
+        "342",
+        "Female",
+        Status.BLOCKED
+    )
+
     @Test
     fun `findById should return null for non-existing client`() {
         Assert.assertNull(clientRepository.findById(UUID.randomUUID()))
@@ -38,18 +48,36 @@ class ClientRepositoryTest : CleanDBeforeEach() {
 
     @Test
     fun `find existing client should return correct value`() {
-        clientRepository.persist(testClient)
+        clientRepository.persist(activeClient1)
         Assert.assertEquals(
-            testClient,
-            clientRepository.findById(testClient.id!!)
+            activeClient1,
+            clientRepository.findById(activeClient1.id)
+        )
+    }
+
+    @Test
+    fun `find existing blocked client should return correct value`() {
+        clientRepository.persist(blockedClient)
+        Assert.assertEquals(
+            blockedClient,
+            clientRepository.findById(blockedClient.id)
         )
     }
 
     @Test
     fun `reinserting the same client should cause an exception`() {
-        clientRepository.persist(testClient)
+        clientRepository.persist(activeClient1)
         Assertions.assertThrows(ArcUndeclaredThrowableException::class.java) {
-            clientRepository.persist(testClient)
+            clientRepository.persist(activeClient1)
         }
+    }
+
+    @Test
+    fun `blocked client should not be returned by getActiveClientsWithMostPoints`() {
+        clientRepository.persist(blockedClient)
+        Assert.assertEquals(0,
+            clientRepository.getActiveClientsWithMostPoints(10, OffsetDateTime.now().minusYears(100))
+                .size
+        )
     }
 }

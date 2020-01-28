@@ -6,29 +6,35 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
 
+enum class Type {
+    SERVICE, PURCHASE
+}
+
 @Entity
-class Purchase(
+class Item( //TODO name is not great
     @Id
-    var id: UUID? = null,
+    var id: UUID,
     @Column(name = "appointment_id")
-    var appointmentId: UUID? = null,
-    var name: String? = null,
-    var price: BigDecimal? = null,
+    var appointmentId: UUID,
+    var name: String,
+    var price: BigDecimal,
+    var type: Type,
     @Column(name = "loyalty_points")
-    var loyaltyPoints: Int? = null
+    var loyaltyPoints: Int
 ) {
 
     companion object Factory {
-        fun fromString(line: String): Purchase {
+        fun fromString(line: String, type: Type): Item {
             val split: List<String> = line.split(",")
 
             if (split.size != 5) throw IllegalArgumentException("Malformed line: $line")
 
-            return Purchase(
+            return Item(
                 UUID.fromString(split[0]),
                 UUID.fromString(split[1]),
                 split[2],
                 BigDecimal(split[3]),
+                type,
                 split[4].toInt() //Is this correct type?
             )
         }

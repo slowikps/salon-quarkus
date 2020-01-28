@@ -10,13 +10,13 @@ import javax.persistence.Id
 @Entity
 class Appointment(
     @Id
-    var id: UUID? = null,
+    var id: UUID,
     @Column(name = "client_id")
-    var clientId: UUID? = null,
+    var clientId: UUID,
     @Column(name = "start_time")
-    var startTime: OffsetDateTime? = null,
+    var startTime: OffsetDateTime,
     @Column(name = "end_time")
-    var endTime: OffsetDateTime? = null
+    var endTime: OffsetDateTime
 ) {
 
     companion object Factory {

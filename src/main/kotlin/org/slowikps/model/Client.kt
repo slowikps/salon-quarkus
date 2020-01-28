@@ -8,7 +8,6 @@ import javax.persistence.Enumerated
 import javax.persistence.Id
 import javax.persistence.NamedQuery
 
-//id,first_name,last_name,email,phone,gender,banned
 enum class Status {
     ACTIVE, BLOCKED
 }
@@ -16,28 +15,26 @@ enum class Status {
 @NamedQuery(
     name = "Client.getMostLoyal",
     query = """
-        SELECT NEW org.slowikps.model.ClientView(c.id, c.firstName, c.lastName, SUM(p.loyaltyPoints + s.loyaltyPoints))
-        FROM Client c JOIN Appointment a ON c.id = a.clientId
-            LEFT JOIN Purchase p ON a.id = p.appointmentId
-            LEFT JOIN Service s ON a.id = s.appointmentId
+        SELECT NEW org.slowikps.model.ClientView(c.id, c.firstName, c.lastName, SUM(i.loyaltyPoints))
+        FROM Client c JOIN Appointment a ON c.id = a.clientId JOIN Item i ON a.id = i.appointmentId
         WHERE c.status = 'ACTIVE' AND a.startTime > :from
         GROUP BY c 
-        ORDER BY SUM(p.loyaltyPoints + s.loyaltyPoints) DESC NULLS LAST
+        ORDER BY SUM(i.loyaltyPoints) DESC NULLS LAST
     """
 )
 @Entity
 data class Client(
     @Id
-    var id: UUID? = null,
+    var id: UUID,
     @Column(name = "first_name")
-    var firstName: String? = null,
+    var firstName: String,
     @Column(name = "last_name")
-    var lastName: String? = null,
-    var email: String? = null, //TODO validation
-    var phone: String? = null, //TODO validation
-    var gender: String? = null,
+    var lastName: String,
+    var email: String, //TODO validation
+    var phone: String, //TODO validation
+    var gender: String,
     @Enumerated(EnumType.STRING)
-    var status: Status? = null
+    var status: Status
 ) {
 
     companion object Factory {
