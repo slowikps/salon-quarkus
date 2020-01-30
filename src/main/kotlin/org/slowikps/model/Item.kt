@@ -1,6 +1,8 @@
 package org.slowikps.model
 
 import java.math.BigDecimal
+import java.math.MathContext
+import java.math.RoundingMode
 import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -33,7 +35,7 @@ class Item( //TODO name is not great
                 UUID.fromString(split[0]),
                 UUID.fromString(split[1]),
                 split[2],
-                BigDecimal(split[3]),
+                BigDecimal(split[3]).round(MathContext(2, RoundingMode.HALF_DOWN)),
                 type,
                 split[4].toInt() //Is this correct type?
             )

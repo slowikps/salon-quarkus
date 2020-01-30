@@ -2,7 +2,7 @@ package org.slowikps.repository
 
 import assertk.all
 import assertk.assertThat
-import assertk.assertions.contains
+import assertk.assertions.containsExactly
 import assertk.assertions.hasSize
 import io.quarkus.test.common.QuarkusTestResource
 import io.quarkus.test.junit.QuarkusTest
@@ -66,7 +66,12 @@ class GetActiveClientsWithMostPointsTest : CleanDBeforeEach() {
     private val appointmentA2C2 =
         Appointment(UUID.randomUUID(), activeClient2.id, "2020-01-03".toODT(), "2020-01-04".toODT())
     private val purchase1A2C2 =
-        Item(UUID.randomUUID(), appointmentA2C1.id, "purchase1A2C1", BigDecimal(20), PURCHASE, 80)
+        Item(UUID.randomUUID(), appointmentA2C2.id, "purchase1A2C2", BigDecimal(20), PURCHASE, 180)
+
+    private val appointmentA3C2 =
+        Appointment(UUID.randomUUID(), activeClient2.id, "2020-01-11".toODT(), "2020-01-11".toODT())
+    private val service1A3C2 =
+        Item(UUID.randomUUID(), appointmentA3C2.id, "service1A3C2", BigDecimal(20), SERVICE, 1)
 
     //CLIENT 3
     private val activeClient3 =
@@ -75,7 +80,7 @@ class GetActiveClientsWithMostPointsTest : CleanDBeforeEach() {
     private val appointmentA1C3 =
         Appointment(UUID.randomUUID(), activeClient3.id, "2020-01-05".toODT(), "2020-01-06".toODT())
     private val service1A1C3 =
-        Item(UUID.randomUUID(), appointmentA1C3.id, "purchase1A2C1", BigDecimal(20), PURCHASE, 90)
+        Item(UUID.randomUUID(), appointmentA1C3.id, "purchase1A1C3", BigDecimal(20), PURCHASE, 190)
 
     //CLIENT Blocked
     private val blockedClient =
@@ -115,20 +120,123 @@ class GetActiveClientsWithMostPointsTest : CleanDBeforeEach() {
     fun `client1 should have 130 points in total`() {
         persistAllDataForClient1()
 
-        assertThat(clientRepository.getActiveClientsWithMostPoints(10, `01-01-2020`)).all {
-            hasSize(1)
-            contains(activeClient1.toClientView(130))
-        }
+        assertThat(clientRepository.getActiveClientsWithMostPoints(10, `01-01-2020`))
+            .containsExactly(activeClient1.toClientView(130))
     }
 
     @Test
-    fun `client1 should have 70 points in from february`() {
+    fun `client1 should have 70 points from february`() {
         persistAllDataForClient1()
 
-        assertThat(clientRepository.getActiveClientsWithMostPoints(10, `01-01-2020`.plusDays(31))).all {
-            hasSize(1)
-            contains(activeClient1.toClientView(70))
-        }
+        assertThat(clientRepository.getActiveClientsWithMostPoints(10, `01-01-2020`.plusDays(31)))
+            .containsExactly(activeClient1.toClientView(70))
+    }
+
+    @Test
+    fun `client1 should have 40 points from march`() {
+        persistAllDataForClient1()
+
+        assertThat(clientRepository.getActiveClientsWithMostPoints(10, `01-01-2020`.plusMonths(2)))
+            .containsExactly(activeClient1.toClientView(40))
+    }
+
+    @Test
+    fun `client2 has 181 points from Jan and should be returned before client1`() {
+        persistAllDataForClient1()
+        persistAllDataForClient2()
+
+        assertThat(clientRepository.getActiveClientsWithMostPoints(10, `01-01-2020`))
+            .containsExactly(
+                activeClient2.toClientView(181),
+                activeClient1.toClientView(130)
+            )
+    }
+
+    @Test
+    fun `client2 has 1 points from 10th of Jan and should be returned after client1`() {
+        persistAllDataForClient1()
+        persistAllDataForClient2()
+
+        assertThat(clientRepository.getActiveClientsWithMostPoints(10, `01-01-2020`.plusDays(10)))
+            .containsExactly(
+                activeClient1.toClientView(70),
+                activeClient2.toClientView(1)
+            )
+    }
+
+    @Test
+    fun `all clients from 01-01-2020 limit 1`() {
+        persistAll()
+
+        assertThat(clientRepository.getActiveClientsWithMostPoints(1, `01-01-2020`))
+            .containsExactly(
+                activeClient3.toClientView(190)
+            )
+    }
+
+    @Test
+    fun `all clients from 01-01-2020 limit 2`() {
+        persistAll()
+
+        assertThat(clientRepository.getActiveClientsWithMostPoints(2, `01-01-2020`))
+            .containsExactly(
+                activeClient3.toClientView(190),
+                activeClient2.toClientView(181)
+            )
+    }
+
+    @Test
+    fun `all clients from 01-01-2020`() {
+        persistAll()
+
+        assertThat(clientRepository.getActiveClientsWithMostPoints(10, `01-01-2020`))
+            .containsExactly(
+                activeClient3.toClientView(190),
+                activeClient2.toClientView(181),
+                activeClient1.toClientView(130)
+            )
+    }
+
+    @Test
+    fun `all clients from 04-01-2020`() {
+        persistAll()
+
+        assertThat(clientRepository.getActiveClientsWithMostPoints(10, `01-01-2020`.plusDays(3)))
+            .containsExactly(
+                activeClient3.toClientView(190),
+                activeClient2.toClientView(181),
+                activeClient1.toClientView(70)
+            )
+    }
+
+    @Test
+    fun `all clients from 05-01-2020`() {
+        persistAll()
+
+        assertThat(clientRepository.getActiveClientsWithMostPoints(10, `01-01-2020`.plusDays(4)))
+            .containsExactly(
+                activeClient3.toClientView(190),
+                activeClient1.toClientView(70),
+                activeClient2.toClientView(1)
+            )
+    }
+
+    @Test
+    fun `all clients from 08-01-2020`() {
+        persistAll()
+
+        assertThat(clientRepository.getActiveClientsWithMostPoints(10, `01-01-2020`.plusDays(7)))
+            .containsExactly(
+                activeClient1.toClientView(70),
+                activeClient2.toClientView(1)
+            )
+    }
+
+    private fun persistAll() {
+        persistAllDataForClient1()
+        persistAllDataForClient2()
+        persistAllDataForClient3()
+        persistBlockClient()
     }
 
     private fun persistAllDataForClient1() {
@@ -144,6 +252,32 @@ class GetActiveClientsWithMostPointsTest : CleanDBeforeEach() {
 
         appointmentRepository.persist(appointmentA3C1)
         itemRepository.persist(service1A3C1)
+    }
+
+    private fun persistAllDataForClient2() {
+        clientRepository.persist(activeClient2)
+
+        appointmentRepository.persist(appointmentA1C2)
+
+        appointmentRepository.persist(appointmentA2C2)
+        itemRepository.persist(purchase1A2C2)
+
+        appointmentRepository.persist(appointmentA3C2)
+        itemRepository.persist(service1A3C2)
+    }
+
+    private fun persistAllDataForClient3() {
+        clientRepository.persist(activeClient3)
+
+        appointmentRepository.persist(appointmentA1C3)
+        itemRepository.persist(service1A1C3)
+    }
+
+    private fun persistBlockClient() {
+        clientRepository.persist(blockedClient)
+
+        appointmentRepository.persist(appointmentA1CBlocked)
+        itemRepository.persist(service1A1CBlocked)
     }
 
     fun Client.toClientView(points: Long) =

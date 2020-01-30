@@ -6,10 +6,11 @@ import io.restassured.RestAssured.given
 import org.apache.commons.io.IOUtils
 import org.junit.jupiter.api.Test
 import org.slowikps.config.DatabaseResource
+import org.slowikps.util.CleanDBeforeEach
 
 @QuarkusTest
 @QuarkusTestResource(DatabaseResource::class)
-class SalonDataImportResourceTest {
+open class SalonDataImportResourceTest : CleanDBeforeEach() {
 
     @Test
     fun testAllImports() {
@@ -24,9 +25,9 @@ class SalonDataImportResourceTest {
 
         given()
             .multiPart("file", "file", bytes)
-            .`when`()
+        .`when`()
             .post("/admin/import/$name")
-            .then()
+        .then()
             .statusCode(204)
     }
 }

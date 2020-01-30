@@ -17,7 +17,7 @@ enum class Status {
     query = """
         SELECT NEW org.slowikps.model.ClientView(c.id, c.firstName, c.lastName, SUM(i.loyaltyPoints))
         FROM Client c JOIN Appointment a ON c.id = a.clientId JOIN Item i ON a.id = i.appointmentId
-        WHERE c.status = 'ACTIVE' AND a.startTime > :from
+        WHERE c.status = 'ACTIVE' AND a.endTime > :from
         GROUP BY c 
         ORDER BY SUM(i.loyaltyPoints) DESC NULLS LAST
     """
