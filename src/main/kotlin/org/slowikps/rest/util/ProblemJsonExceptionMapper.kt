@@ -1,6 +1,8 @@
 package org.slowikps.rest.util
 
 import org.postgresql.util.PSQLException
+import javax.ws.rs.NotFoundException
+import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.Response
 import javax.ws.rs.ext.ExceptionMapper
 import javax.ws.rs.ext.Provider
@@ -10,30 +12,38 @@ class ProblemJsonExceptionMapper : ExceptionMapper<RuntimeException> {
 
     //Ugly - exception wrapped
     override fun toResponse(exception: RuntimeException): Response {
-        val body = when (val ex = tryExtractSupportedTypes(exception, PSQLException::class.java)) {
+        val problem: Problem = when (val ex = tryExtractSupportedTypes(exception, PSQLException::class.java, NotFoundException::class.java)) {
             is PSQLException -> {
                 if (ex.sqlState == "23505" ) Problem(
-                    "Bad Request ",
+                    "Bad Request",
                     400,
                     "Duplicated value [message: ${ex.serverErrorMessage.detail}]"
                 )
                 else Problem(
-                    "Bad Request ",
+                    "Bad Request",
                     400,
                     ex.serverErrorMessage.detail
+                )
+            }
+            is NotFoundException -> {
+                Problem(
+                    "Not Found",
+                    404,
+                    ex.message ?: "UNKNOWN"
                 )
             }
             else -> {
                 badRequest(exception.message ?: "UNKNOWN")
             }
         }
-        return Response.status(Response.Status.BAD_REQUEST)
-            .entity(body)
+        return Response.status(problem.status)
+            .entity(problem)
+            .type(MediaType.APPLICATION_JSON)
             .build();
     }
 
-    //Hacky hack
-    private fun tryExtractSupportedTypes(cause: Throwable?, vararg types: Class<PSQLException>): Throwable? {
+    //Hacky hack, checked exception are wrapped
+    private fun tryExtractSupportedTypes(cause: Throwable?, vararg types: Class<out Exception>): Throwable? {
         return when {
             cause == null -> {
                 null

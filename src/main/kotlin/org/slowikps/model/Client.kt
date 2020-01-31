@@ -9,7 +9,7 @@ import javax.persistence.Id
 import javax.persistence.NamedQuery
 
 enum class Status {
-    ACTIVE, BLOCKED
+    ACTIVE, BLOCKED, DELETED
 }
 
 @NamedQuery(
@@ -55,4 +55,24 @@ data class Client(
             )
         }
     }
+}
+@DefaultConstructor
+data class ClientPut(
+    var firstName: String,
+    var lastName: String,
+    var email: String,
+    var phone: String,
+    var gender: String,
+    var status: Status
+) {
+    fun toClient(id: UUID): Client =
+        Client(
+            id,
+            firstName = firstName,
+            lastName = lastName,
+            email = email,
+            phone = phone,
+            gender = gender,
+            status = status
+        )
 }

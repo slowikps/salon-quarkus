@@ -2,6 +2,7 @@ package org.slowikps.repository
 
 import org.slowikps.model.Client
 import org.slowikps.model.ClientView
+import org.slowikps.model.Status
 import java.time.OffsetDateTime
 import java.util.UUID
 import javax.enterprise.context.ApplicationScoped
@@ -27,6 +28,7 @@ class ClientRepository {
 
     fun findById(id: UUID): Client? {
         return em.find(Client::class.java, id)
+            ?.takeIf { it.status != Status.DELETED }
     }
 
     fun getActiveClientsWithMostPoints(limit: Int, from: OffsetDateTime): List<ClientView> {

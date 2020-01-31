@@ -72,6 +72,7 @@ If you want to learn more about building native executables, please consult http
 1. ORM improvement - Panache looks interesting at first glance. Does it work well with Kotlin?
 1. Move to Java 12
 1. Annoying `ArcUndeclaredThrowableException` how to avoid this?
-1. Optimistic locking: 
-1.1 REST (see https://opensource.zalando.com/restful-api-guidelines/#optimistic-locking) 
-1.2 PostgreSQL 
+1. Optimistic locking:
+ 
+   - REST (see https://opensource.zalando.com/restful-api-guidelines/#optimistic-locking) 
+   - PostgreSQL 
