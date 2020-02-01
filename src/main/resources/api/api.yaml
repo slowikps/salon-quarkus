@@ -1,0 +1,215 @@
+openapi: 3.0.0
+info:
+  title: Salon software API
+  version: "1.0"
+paths:
+  /admin/import/appointment:
+    post:
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: binary
+      responses:
+        201:
+          description: Created
+        default:
+          description: The body is invalid - see the problem object for more information.
+          schema:
+            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+  /admin/import/client:
+    post:
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: binary
+      responses:
+        201:
+          description: Created
+        default:
+          description: The body is invalid - see the problem object for more information.
+          schema:
+            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+  /admin/import/purchase:
+    post:
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: binary
+      responses:
+        201:
+          description: Created
+        default:
+          description: The body is invalid - see the problem object for more information.
+          schema:
+            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+  /admin/import/service:
+    post:
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: binary
+      responses:
+        201:
+          description: Created
+        default:
+          description: The body is invalid - see the problem object for more information.
+          schema:
+            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+  /client/findMostLoyal:
+    get:
+      parameters:
+        - name: from
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            format: int32
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsePageClientView'
+        default:
+          description: The body is invalid - see the problem object for more information.
+          schema:
+            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+
+  /client/{id}:
+    get:
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        default:
+          description: The body is invalid - see the problem object for more information.
+          schema:
+            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+    put:
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientPut'
+      responses:
+        200:
+          description: OK
+        default:
+          description: The body is invalid - see the problem object for more information.
+          schema:
+            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+    delete:
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        204:
+          description: No Content
+        default:
+          description: The body is invalid - see the problem object for more information.
+          schema:
+            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+components:
+  schemas:
+    UUID:
+      format: uuid
+      type: string
+    Status:
+      enum:
+        - ACTIVE
+        - BLOCKED
+        - DELETED
+      type: string
+    Client:
+      type: object
+      properties:
+        email:
+          type: email
+        firstName:
+          type: string
+        gender:
+          type: string
+        id:
+          $ref: '#/components/schemas/UUID'
+        lastName:
+          type: string
+        phone:
+          type: string
+        status:
+          $ref: '#/components/schemas/Status'
+    ClientView:
+      type: object
+      properties:
+        firstName:
+          type: string
+        id:
+          $ref: '#/components/schemas/UUID'
+        lastName:
+          type: string
+        loyaltyPoints:
+          format: int64
+          type: integer
+    ListObject:
+      type: array
+      items:
+        $ref: '#/components/schemas/ClientView'
+    ResponsePageClientView:
+      type: object
+      properties:
+        items:
+          $ref: '#/components/schemas/ListObject'
+    ClientPut:
+      type: object
+      properties:
+        email:
+          type: string
+        firstName:
+          type: string
+        gender:
+          type: string
+        lastName:
+          type: string
+        phone:
+          type: string
+        status:
+          $ref: '#/components/schemas/Status'
