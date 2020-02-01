@@ -19,6 +19,7 @@ This project uses:
 1. Flyway for Database schema management. Migrations are automatically applied to DB on the application startup. It might not be a good idea for the production environment.
 1. Docker for both JVM and native image
 1. PostgreSQL in Docker for local development and tests
+1. Open API - see: /openapi and /swagger-ui
 1. Tests environment: 
 1.1 Testcontainers to manage PostgreSQL in Docker 
 1.2 Flyway to clean the database before each test

@@ -12,14 +12,18 @@ paths:
               type: object
               properties:
                 file:
-                  type: binary
+                  type: string
+                  format: binary
       responses:
         201:
           description: Created
         default:
           description: The body is invalid - see the problem object for more information.
-          schema:
-            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+          content:
+            application/json:
+              schema:
+                $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
+
   /admin/import/client:
     post:
       requestBody:
@@ -29,14 +33,18 @@ paths:
               type: object
               properties:
                 file:
-                  type: binary
+                  type: string
+                  format: binary
       responses:
         201:
           description: Created
         default:
           description: The body is invalid - see the problem object for more information.
-          schema:
-            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+          content:
+            application/json:
+              schema:
+                $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
+
   /admin/import/purchase:
     post:
       requestBody:
@@ -46,14 +54,18 @@ paths:
               type: object
               properties:
                 file:
-                  type: binary
+                  type: string
+                  format: binary
       responses:
         201:
           description: Created
         default:
           description: The body is invalid - see the problem object for more information.
-          schema:
-            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+          content:
+            application/json:
+              schema:
+                $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
+
   /admin/import/service:
     post:
       requestBody:
@@ -63,14 +75,18 @@ paths:
               type: object
               properties:
                 file:
-                  type: binary
+                  type: string
+                  format: binary
       responses:
         201:
           description: Created
         default:
           description: The body is invalid - see the problem object for more information.
-          schema:
-            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+          content:
+            application/json:
+              schema:
+                $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
+
   /client/findMostLoyal:
     get:
       parameters:
@@ -78,6 +94,7 @@ paths:
           in: query
           schema:
             type: string
+            format: date
         - name: limit
           in: query
           schema:
@@ -94,8 +111,10 @@ paths:
                 $ref: '#/components/schemas/ResponsePageClientView'
         default:
           description: The body is invalid - see the problem object for more information.
-          schema:
-            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+          content:
+            application/json:
+              schema:
+                $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
 
   /client/{id}:
     get:
@@ -114,8 +133,11 @@ paths:
                 $ref: '#/components/schemas/Client'
         default:
           description: The body is invalid - see the problem object for more information.
-          schema:
-            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+          content:
+            application/json:
+              schema:
+                $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
+
     put:
       parameters:
         - name: id
@@ -133,8 +155,11 @@ paths:
           description: OK
         default:
           description: The body is invalid - see the problem object for more information.
-          schema:
-            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+          content:
+            application/json:
+              schema:
+                $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
+
     delete:
       parameters:
         - name: id
@@ -147,8 +172,11 @@ paths:
           description: No Content
         default:
           description: The body is invalid - see the problem object for more information.
-          schema:
-            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+          content:
+            application/json:
+              schema:
+                $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
+
 components:
   schemas:
     UUID:
@@ -164,7 +192,8 @@ components:
       type: object
       properties:
         email:
-          type: email
+          type: string
+          format: email
         firstName:
           type: string
         gender:
