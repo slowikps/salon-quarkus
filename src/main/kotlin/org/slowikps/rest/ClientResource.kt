@@ -9,6 +9,8 @@ import java.text.SimpleDateFormat
 import java.time.ZoneOffset
 import java.util.UUID
 import javax.inject.Inject
+import javax.validation.constraints.Max
+import javax.validation.constraints.Min
 import javax.ws.rs.Consumes
 import javax.ws.rs.DELETE
 import javax.ws.rs.GET
@@ -32,13 +34,15 @@ class ClientResource {
     @Context
     private lateinit var uriInfo: UriInfo
 
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+    private val dateFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd").apply {
+        isLenient = false
+    }
 
     @Path("findMostLoyal")
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     fun getMostLoyalClient(
-        @QueryParam("limit") limit: Int,
+        @QueryParam("limit") @Min(1) @Max(100) limit: Int,
         @QueryParam("from") from: String
     ): ResponsePage<ClientView> {
         return ResponsePage(

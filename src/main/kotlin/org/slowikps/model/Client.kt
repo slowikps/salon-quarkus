@@ -7,6 +7,8 @@ import javax.persistence.EnumType
 import javax.persistence.Enumerated
 import javax.persistence.Id
 import javax.persistence.NamedQuery
+import javax.validation.constraints.Email
+import javax.validation.constraints.NotBlank
 
 enum class Status {
     ACTIVE, BLOCKED, DELETED
@@ -58,10 +60,15 @@ data class Client(
 }
 @DefaultConstructor
 data class ClientPut(
+    @NotBlank(message="First Name may not be blank")
     var firstName: String,
+    @NotBlank(message="Last Name may not be blank")
     var lastName: String,
+    @Email
     var email: String,
+    @NotBlank(message="Phone may not be blank")
     var phone: String,
+    @NotBlank(message="Gender may not be blank")
     var gender: String,
     var status: Status
 ) {

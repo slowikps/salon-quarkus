@@ -232,11 +232,15 @@ components:
       properties:
         email:
           type: string
+          format: email
         firstName:
+          minLength: 1
           type: string
         gender:
+          minLength: 1
           type: string
         lastName:
+          minLength: 1
           type: string
         phone:
           type: string
