@@ -1,3 +1,4 @@
+#!/bin/bash
 if docker ps -a | grep salon-db; then
   docker start salon-db
 else

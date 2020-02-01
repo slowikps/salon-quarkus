@@ -42,6 +42,40 @@ You can start PostgreSQL in docker using:
 ```
 ./db-in-docker.sh
 ```
+
+## Running prebuilt (for mac os) native image: 
+./start-native.sh
+
+## Sample curls
+list the top clients
+```
+curl "localhost:8080/client/findMostLoyal?from=1999-12-01&limit=10"
+```
+
+consume and parse clients.csv
+```
+curl --location --request POST 'http://localhost:8080/admin/import/client' \
+--header 'Content-Type: multipart/form-data' \
+--form 'type=client' \
+--form 'file=@src/test/resources/clients.csv'
+```
+create client
+```
+curl --location --request PUT 'localhost:8080/client/EF51943B-0F6F-4FFF-85BD-E6BFE0935102' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "email": "some@email.net",
+    "firstName": "Pawel",
+    "gender": "Male",
+    "lastName": "Kunde",
+    "phone": "1234",
+    "status": "ACTIVE"
+}'
+```
+get client by id
+```
+curl localhost:8080/client/EF51943B-0F6F-4FFF-85BD-E6BFE0935102
+```
 ## Packaging and running the application
 
 The application is packageable using `./mvnw package`.
